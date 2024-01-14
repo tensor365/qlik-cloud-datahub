@@ -80,7 +80,7 @@ class QlikAutomation:
     description: str
 
 class ItemKey(ContainerKey):
-    id: str
+    item_id: str
 
 class QlikSource(Source):
 
@@ -201,7 +201,7 @@ class QlikSource(Source):
         return ItemKey(
             platform=self.platform,
             instance=self.source_config.platform_instance,
-            project_id=item_id,
+            item_id=item_id,
         )
 
     def get_workunits_internal(self) -> Iterable[MetadataWorkUnit]:

@@ -5,3 +5,7 @@ The core pieces for building your own source is a python package containing the 
 
 ## my-source
 `my-source` is an example custom source which always returns the content of `example_mce/single_mce.json` as an MCE. It can work as a base for custom sources you may need in your project and are not available in the offical project yet.
+
+## Ingestion commande
+
+datahub ingest run -c "./qlik_cloud_source.yaml"

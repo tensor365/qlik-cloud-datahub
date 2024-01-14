@@ -8,6 +8,10 @@ from datahub.ingestion.api.source import Source, SourceReport
 from datahub.ingestion.api.workunit import MetadataWorkUnit
 from datahub.metadata.com.linkedin.pegasus2avro.mxe import MetadataChangeEvent
 
+from datahub.ingestion.source.state.stale_entity_removal_handler import (
+    StaleEntityRemovalHandler
+)
+
 from datahub.emitter.mcp_builder import (
     ContainerKey,
     add_entity_to_container,
@@ -21,7 +25,6 @@ from datahub.ingestion.api.source import (
     TestableSource,
     TestConnectionReport,
 )
-
 
 from pydantic import Field
 
@@ -94,10 +97,11 @@ class QlikCloudSource(Source):
 
     platform = 'qlik_cloud'
 
-    def __init__(self, config: QlikCloudConnectionConfig, ctx: PipelineContext):
-        super().__init__(ctx)
+    def __init__(self, config: QlikCloudConfig, ctx: PipelineContext):
+        super().__init__(config, ctx)
         self.source_config = config
         self._authenticate() # Connection to Qlik Cloud Tenant via SDK
+
 
     @staticmethod
     def test_connection(config_dict: dict) -> TestConnectionReport:
@@ -111,6 +115,20 @@ class QlikCloudSource(Source):
                 capable=False, failure_reason=str(e)
             )
         return test_report
+
+    @classmethod
+    def create(cls, config_dict: dict, ctx: PipelineContext) -> Source:
+        config = QlikCloudConfig.parse_obj(config_dict)
+        return cls(config, ctx)
+
+    def get_workunit_processors(self) -> List[Optional[MetadataWorkUnitProcessor]]:
+        return [
+            *super().get_workunit_processors(),
+            StaleEntityRemovalHandler.create(
+                self, self.config, self.ctx
+            ).workunit_processor,
+        ]
+
 
     def _authenticate(self) -> None:
         try:

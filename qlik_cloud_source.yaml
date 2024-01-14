@@ -1,6 +1,5 @@
 source:
-  type: qlik_cloud.custom_ingestion_source.QlikCloudSource
+  type: qlik_cloud.qlik_cloud_source.QlikCloudSource
   config:
-    env: "DEV"
-sink:
-  type: "console"
+    tenant_url: "xxxx"
+    token_secret: "xxxxxx"

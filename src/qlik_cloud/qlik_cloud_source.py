@@ -82,7 +82,7 @@ class QlikAutomation:
 class ItemKey(ContainerKey):
     item_id: str
 
-class QlikSource(Source):
+class QlikCloudSource(Source):
 
     source_config: QlikCloudConnectionConfig
     report: SourceReport = SourceReport()

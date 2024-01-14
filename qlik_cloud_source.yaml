@@ -1,0 +1,6 @@
+source:
+  type: qlik_cloud.custom_ingestion_source.QlikCloudSource
+  config:
+    env: "DEV"
+sink:
+  type: "console"
